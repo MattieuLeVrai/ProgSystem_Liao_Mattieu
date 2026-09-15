@@ -1,5 +1,6 @@
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 public class Image {
     private int width;
@@ -13,17 +14,17 @@ public class Image {
     /**
      * Constructeur : initialise une image vide.
      */
-    public Image(int width, int hauteur) {
+    public Image(int width, int height) {
         this.width = width;
         this.height = height;
-        pixels = new int[hauteur][largeur][3];
+        pixels = new int[height][width][3];
     }
 
     /**
      * Définit la couleur d'un pixel à la position (x, y)
      */
     public void setPixel(int x, int y, int r, int g, int b) {
-        if (x >= 0 && x < largeur && y >= 0 && y < hauteur) {
+        if (x >= 0 && x < width && y >= 0 && y < height) {
             pixels[y][x][0] = r;
             pixels[y][x][1] = g;
             pixels[y][x][2] = b;
@@ -33,8 +34,23 @@ public class Image {
     /**
      * Sauvegarde l'image au format texte PPM (P3)
      */
-    public void save_txt(String filename) throws IOException {
-        // TODO : écrire le fichier PPM avec FileWriter
+    public void save(String filename) throws IOException {
+        PrintWriter writer = new PrintWriter(filename);
+        
+        writer.println("P3");
+        writer.println(this.width + " " + this.height);
+        writer.println("255");
+        
+        for (int y = 0; y < this.height; y++) {
+            for (int x = 0; x < this.width; x++) {
+                int r = pixels[y][x][0];
+                int g = pixels[y][x][1];
+                int b = pixels[y][x][2];
+                writer.write(r + " " + g + " " + b + " ");
+            }
+            writer.write("\n");
+        }
+        writer.close();
 
     }
 }
