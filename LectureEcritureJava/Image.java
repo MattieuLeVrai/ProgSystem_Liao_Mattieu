@@ -1,6 +1,6 @@
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.FileOutputStream;
 
 public class Image {
     private int width;
@@ -34,18 +34,21 @@ public class Image {
     /**
      * Sauvegarde l'image au format texte PPM (P3)
      */
-    public void save(String filename) throws IOException {
-        PrintWriter writer = new PrintWriter(filename);
+    public void save_txt(String filename) throws IOException {
+        FileWriter writer = new FileWriter(filename);
+        int r, 
+            g, 
+            b;
         
-        writer.println("P3");
-        writer.println(this.width + " " + this.height);
-        writer.println("255");
+        writer.write("P3\n");
+        writer.write(this.width + " " + this.height +"\n");
+        writer.write("255\n");
         
         for (int y = 0; y < this.height; y++) {
             for (int x = 0; x < this.width; x++) {
-                int r = pixels[y][x][0];
-                int g = pixels[y][x][1];
-                int b = pixels[y][x][2];
+                r = pixels[y][x][0];
+                g = pixels[y][x][1];
+                b = pixels[y][x][2];
                 writer.write(r + " " + g + " " + b + " ");
             }
             writer.write("\n");
@@ -53,4 +56,28 @@ public class Image {
         writer.close();
 
     }
+
+
+    public void save_binaire(String filename) throws IOException {
+        FileOutputStream writer = new FileOutputStream(filename);
+        writer.write("P6\n".getBytes());
+        writer.write((this.width + " " + this.height +"\n").getBytes());
+        writer.write("255\n".getBytes());
+
+        byte[] tableau = new byte[3];
+
+        for (int y = 0; y < this.height; y++) {
+            for (int x = 0; x < this.width; x++) {
+
+                tableau[0] = (byte) pixels[y][x][0];
+                tableau[1] = (byte) pixels[y][x][1];
+                tableau[2] = (byte) pixels[y][x][2];
+
+                writer.write(tableau);
+            }
+        }
+
+        writer.close();
+    }
+    
 }
