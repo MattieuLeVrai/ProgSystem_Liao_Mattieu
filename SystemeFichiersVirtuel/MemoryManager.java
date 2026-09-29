@@ -31,10 +31,10 @@ public class MemoryManager {
 
     private void initializeFilesystem() {
         writeSuperblock();
-        for (int i = 0; i <= 128; i++) {
-            int indexOctet = BITMAP_OFFSET + (i / 8);
-            int indexBit = i % 8;
-            memory[indexOctet] |= (1 << (7 - indexBit));
+
+    
+        for (int i = 0; i < 128; i++) {
+            setBlockUsed(i, true);
         }
 
     }
@@ -83,11 +83,11 @@ public class MemoryManager {
         int byteIndex = blockNumber / 8;
         int bitPosition = blockNumber % 8;
         int offset = BITMAP_OFFSET + byteIndex;
-        int masque = 1 << bitPosition;
+        byte masque = (byte) (1 << bitPosition);
 
         if (used) {
             // Positionner le bit à 1.
-            memory[offset] |=  masque;
+            memory[offset] |= masque;
 
         } else {
             // Positionner le bit à 0.
@@ -104,24 +104,28 @@ public class MemoryManager {
             return -1;
         }
 
-        // TODO:
-        // Calculer byteIndex.
-        // Calculer bitPosition.
-        // Lire le bit.
+        int byteIndex = blockNumber / 8;
+        int bitPosition = blockNumber % 8;
+        int offset = BITMAP_OFFSET + byteIndex;
+        byte masque = (byte) (1 << bitPosition);
+        int used = memory[offset] & masque;
 
-        return -1;
+        if(used == 0){
+            return 0;
+        }
+        
+        return 1;
     }
 
     public int allocateBlock() {
-
-        // TODO:
-        // Parcourir les blocs de données :
-        // 129 .. NUM_BLOCKS - 1.
-        //
-        // Retourner le premier bloc libre.
-        // Le marquer immédiatement comme utilisé.
-
+        for (int i = 129; i < NUM_BLOCKS; i++) {
+            if (isBlockUsed(i) == 0) {
+                setBlockUsed(i, true);
+                return i;
+            }
+        }
         return -1;
+
     }
 
 }
