@@ -32,7 +32,7 @@ public class Utils {
             memory[offset + (7 - i)] = (byte) ((value >> (i * 8)) & 0xFF);
         }
         return 8;
-}
+    }
 
     public static long readLong(byte[] memory, int offset) {
         long value = 0;
@@ -40,7 +40,7 @@ public class Utils {
             value = (value << 8) | (memory[offset + i] & 0xFF);
         }
         return value;
-}
+    }
 
     public static int writeString(
             byte[] memory,
@@ -72,4 +72,5 @@ public class Utils {
         }
         return new String(memory, offset, length);
     }
+    
 }
