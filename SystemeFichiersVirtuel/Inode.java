@@ -91,5 +91,21 @@ public class Inode {
         // 9. Nombre de liens (int, 4 octets)
         offset += Utils.writeInt(memory, offset, linkCount);
     }
+
+    public long getCreationTime() {
+        return Utils.readLong(memoryManager.getFilesystemMemory(), getInodeOffset() + 12);
+    }
+
+    public int getIndirectPointer() {
+        return Utils.readInt(memoryManager.getFilesystemMemory(), getInodeOffset() + 68);
+    }
+
+    public short getPermissions() {
+        return Utils.readShort(memoryManager.getFilesystemMemory(), getInodeOffset() + 72);
+    }
+
+    public int getLinkCount() {
+        return Utils.readInt(memoryManager.getFilesystemMemory(), getInodeOffset() + 74);
+    }
 }
 
