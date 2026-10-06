@@ -21,12 +21,14 @@ public class Inode {
 
     public int getFileType() {
         // Lire le type à offset + 4.
-        return getInodeOffset() + 4;
+        byte[] memory = memoryManager.getFilesystemMemory();
+        return Utils.readInt(memory, getInodeOffset() + 4);
     }
 
     public int getFileSize() {
         // Lire la taille à offset + 8.
-        return getInodeOffset() + 8;
+        byte[] memory = memoryManager.getFilesystemMemory();
+        return Utils.readInt(memory, getInodeOffset() + 8);
     }
 
     public int[] getDirectPointers() {
@@ -55,40 +57,39 @@ public class Inode {
             int linkCount) {
 
         byte[] memory = memoryManager.getFilesystemMemory();
+
         int offset = getInodeOffset();
 
-        // 1. Numéro d'inode (4 octets)
-        Utils.writeInt(memory, offset, this.inodeNumber);
-        offset += 4;
+        // 1. Numéro d'inode (int, 4 octets)
+        offset += Utils.writeInt(memory, offset, inodeNumber);
 
-        // 2. Type (4 octets)
-        Utils.writeInt(memory, offset, fileType);
-        offset += 4;
-        
-        // 3. Taille (4 octets)
-        Utils.writeInt(memory, offset, fileSize);
-        offset += 4;
+        // 2. Type (int, 4 octets)
+        offset += Utils.writeInt(memory, offset, fileType);
 
-        // 4. Date de création (8 octets)
-        Utils.writeLong(memory, offset, creationTime);
-        offset += 8;
-        Utils.writeLong(memory, offset, modificationTime);
-        offset += 8;
-        for (int i = 0; i < 10; i++) {
-            int ptr = (directPointers != null && i < directPointers.length) ? directPointers[i] : 0;
-            Utils.writeInt(memory, offset, ptr);
-            offset += 4;
+        // 3. Taille (int, 4 octets)
+        offset += Utils.writeInt(memory, offset, fileSize);
+
+        // 4. Date de création (long, 8 octets)
+        offset += Utils.writeLong(memory, offset, creationTime);
+
+        // 5. Date de modification (long, 8 octets)
+        offset += Utils.writeLong(memory, offset, modificationTime);
+
+        // 6. Dix pointeurs directs (10 x 4 octets)
+        for (int i = 0; i < DIRECT_POINTERS; i++) {
+            int ptr = (directPointers != null && i < directPointers.length)
+                    ? directPointers[i] : 0;
+            offset += Utils.writeInt(memory, offset, ptr);
         }
 
-        // 7. Pointeur indirect (4 octets)
-        Utils.writeInt(memory, offset, indirectPointer);
-        offset += 4;
+        // 7. Pointeur indirect (int, 4 octets)
+        offset += Utils.writeInt(memory, offset, indirectPointer);
 
-        // 8. Permissions (2 octets)
-        Utils.writeShort(memory, offset, permissions);
-        offset += 2;
+        // 8. Permissions (short, 2 octets)
+        offset += Utils.writeShort(memory, offset, permissions);
 
-        // 9. Nombre de liens (4 octets)
-        Utils.writeInt(memory, offset, linkCount);
+        // 9. Nombre de liens (int, 4 octets)
+        offset += Utils.writeInt(memory, offset, linkCount);
     }
 }
+
