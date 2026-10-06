@@ -246,6 +246,48 @@ public class TestRunner{
     System.out.println("[OK] Étape 7 validée !");
 }
 
+    public static void testStep8() {
+        System.out.println("=== TEST ÉTAPE 8 : Création Fichier ===");
+
+        VirtualFileSystem vfs =
+                new VirtualFileSystem();
+
+        boolean ok1 =
+                vfs.createFile("/", "fichier1.txt");
+
+        boolean ok2 =
+                vfs.createFile("/", "fichier2.txt");
+
+        assert ok1 :
+                "La création du premier fichier a échoué";
+
+        assert ok2 :
+                "La création du second fichier a échoué";
+
+        MemoryManager mm =
+                vfs.getMemoryManager();
+
+        Inode inode0 =
+                new Inode(mm, 0);
+
+        Inode inode1 =
+                new Inode(mm, 1);
+
+        assert inode0.getFileType() == 1 :
+                "L'inode 0 doit représenter un fichier";
+
+        assert inode1.getFileType() == 1 :
+                "L'inode 1 doit représenter un fichier";
+
+        assert inode0.getFileSize() == 0 :
+                "Le premier fichier doit être vide";
+
+        assert inode1.getFileSize() == 0 :
+                "Le second fichier doit être vide";
+
+        System.out.println("[OK] Étape 8 validée !");
+    }
+
 
     public static void main(String[] args){
         testStep2();
@@ -253,8 +295,7 @@ public class TestRunner{
         testStep5();
         testStep6();
         testStep7();
+        testStep8();
     }
-    
-    
 
 }
