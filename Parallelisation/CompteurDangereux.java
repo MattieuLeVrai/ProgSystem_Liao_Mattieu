@@ -14,6 +14,8 @@ public class CompteurDangereux {
         public void run() {
             for (int i = 0; i < nombreIncrements; i++) {
                 // TODO: Expliquer pourquoi cette ligne pose problème
+                /* compteurGlobal est pas atomique deux threads peuvent
+                 lire la même valeur au même moment et écraser l'incrément de l'autre. */
                 compteurGlobal++;  // RACE CONDITION ICI !
             }
             System.out.println(nom + " terminé. Compteur vu : " + compteurGlobal);

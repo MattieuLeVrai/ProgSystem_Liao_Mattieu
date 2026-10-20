@@ -108,4 +108,7 @@ public class Inode {
         return Utils.readInt(memoryManager.getFilesystemMemory(), getInodeOffset() + 74);
     }
 }
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
